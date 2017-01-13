@@ -176,7 +176,7 @@ void loop() {
             client.println("<br>");
             client.println("<h3>Box:</h3>");
             client.println(" Temp: ");
-            client.println(ltf);
+            client.println(lt * 1.8 + 32);
             client.println(" *F");
             client.println("<br>");
             client.println("Lux Value: ");
