@@ -131,13 +131,16 @@ void loop() {
    tsl.getEvent(&event);
 
             float lh = sensor.readHumidity();
-            float ltf = sensor.readTemperature();
-            float lt = ltf*1.8+32;
+            float lt = sensor.readTemperature();
+            float ltf = lt * 1.8 + 32;
             float lux = event.light;
+            float svp = 610.7 * (pow(10, (7.5*lt/(237.3+lt))));
+            float vpd = (((100 - lh)/100)*svp)/1000;
 
-            ThingSpeak.writeField(myChannelNumber, 1, lt, myWriteAPIKey);            
+            ThingSpeak.writeField(myChannelNumber, 1, ltf, myWriteAPIKey);            
             ThingSpeak.writeField(myChannelNumber, 2, lh, myWriteAPIKey);            
             ThingSpeak.writeField(myChannelNumber, 3, lux, myWriteAPIKey);
+            ThingSpeak.writeField(myChannelNumber, 4, vpd, myWriteAPIKey);
 
             
 
@@ -173,7 +176,7 @@ void loop() {
             client.println("<br>");
             client.println("<h3>Box:</h3>");
             client.println(" Temp: ");
-            client.println(lt*1.8+32);
+            client.println(ltf);
             client.println(" *F");
             client.println("<br>");
             client.println("Lux Value: ");
@@ -184,6 +187,12 @@ void loop() {
             client.println(lh);
             client.println(" %");
             client.println("<br>");
+            client.println("Saturated Vapor Pressure: ");
+            client.println(svp);
+            client.println("<br>");
+            client.println("VPD: ");
+            client.println(vpd);
+            client.println("kPa");
             client.println("</body></font></html>");     
                       
             break;
@@ -204,4 +213,3 @@ void loop() {
     client.stop();
     Serial.println("Client disconnected.");
   }}
-
